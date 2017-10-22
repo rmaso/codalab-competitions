@@ -1,0 +1,167 @@
+.navbar.navbar-default.navbar-fixed-top  {
+    border-width:0 0 2px 0;
+    .box-shadow(0 2px 8px @gray-dark);
+    .navbar-header {
+        .navbar-brand {
+            line-height:@navbar-height - 10;
+            img {
+                width: 135px;
+            }
+            &:focus {
+                outline:none;
+            }
+        }
+        h1 {
+            margin-top: 15px;
+        }
+    }
+    .navbar-nav {
+        margin-top: 15px;
+        > li {
+            border-bottom: 2px solid transparent;
+            height: @navbar-height + 13;
+            &.active {
+                border-color: @navbar-border;
+            }
+            > a {
+                line-height:@navbar-height; // account for top border on parent
+                &:active, &:focus {
+                    outline:none;
+                }
+            }
+        }
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+    }
+    .navbar-form {
+        .navbar-vertical-align(32px);
+        .form-control {
+            height:32px;
+            padding:4px 10px;
+        }
+    }
+    .mini-avatar {
+        width:36px;
+        border:1px solid @gray-light;
+        border-radius:50%;
+        margin-top:-3px;
+    }
+}
+.ws-interface .navbar.navbar-default.navbar-fixed-top {
+    .box-shadow(none);
+    .navbar-nav > li > .dropdown-menu {
+        margin-top:2px;
+    }
+}
+.dropdown-menu .divider {
+    margin:5px 0 4px;
+}
+
+@media (max-width: @grid-float-breakpoint) {
+    .navbar.navbar-default.navbar-fixed-top {
+        .navbar-nav {
+            padding:0;
+            margin-bottom:20px;
+            margin-top:5px;
+            > li {
+                border:none;
+                > a {
+                    line-height: inherit;
+                }
+            }
+            .dropdown-menu {
+                display: block;
+                position: static;
+                float: none;
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                li.divider {
+                    .hide;
+                }
+                > li > a {
+                    padding:5px 15px 5px 30px;
+                    font-size:@font-size-med;
+                    .caret {
+                        .hide;
+                    }
+                }
+            }
+        }
+        .mini-avatar {
+            .hide;
+        }
+    }
+}
+
+
+.navbar-main .nav{
+    >li>a>span{
+        border-bottom:2px solid transparent
+    }
+
+    >.active>a>span, >li:hover>a>span{
+        border-color: transparent
+    }
+}
+
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+  color: #424242;
+  background-color: transparent;
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: #757575;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+  color: #4285f4;
+  background-color: transparent;
+}
+
+.navbar-toggle {
+    margin-top: 10px;
+}
+
+.navbar-toggle .icon-bar:nth-child(2){
+    -webkit-transform:translateY(6px) translateX(-6px) rotate(-90deg);
+    -ms-transform:translateY(6px) translateX(-6px) rotate(-90deg);
+    transform:translateY(6px) translateX(-6px) rotate(-90deg)
+}
+
+.navbar-toggle .icon-bar:nth-child(3){
+    -webkit-transform:translateY(0px) rotate(-90deg);
+    -ms-transform:translateY(0px) rotate(-90deg);
+    transform:translateY(-0px) rotate(-90deg)
+}
+
+.navbar-toggle .icon-bar:nth-child(4){
+    -webkit-transform:translateY(-6px) translateX(6px) rotate(-90deg);
+    -ms-transform:translateY(-6px) translateX(6px) rotate(-90deg);
+    transform:translateY(-6px) translateX(6px) rotate(-90deg)
+
+}
+
+
+.navbar-toggle .icon-bar:nth-child(2){
+    -webkit-transform:none;-ms-transform:none;transform:none
+}
+
+.navbar-toggle .icon-bar:nth-child(3){
+    -webkit-transform:none;-ms-transform:none;transform:none
+}
+
+.navbar-toggle .icon-bar:nth-child(4){
+    -webkit-transform:none;-ms-transform:none;transform:none
+
+}
+
+
+.navbar-toggle.collapsed .icon-bar:nth-child(2){-webkit-transform:none;-ms-transform:none;transform:none}
+.navbar-toggle.collapsed .icon-bar:nth-child(3){-webkit-transform:none;-ms-transform:none;transform:none}
+.navbar-toggle.collapsed .icon-bar:nth-child(4){-webkit-transform:none;-ms-transform:none;transform:none}
+

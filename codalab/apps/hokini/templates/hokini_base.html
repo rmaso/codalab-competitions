@@ -1,0 +1,128 @@
+{% extends "hokini_base_root.html" %}
+
+{% load url from future %}
+{% load account %}
+{% load analytical %}
+{% load codalab_tags %}
+{% load compress %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block extend_root %}
+{% block header %}
+{# INFO: navbar concept: http://getbootstrap.com/components/#navbar #}
+<header class="navbar navbar-default js-navbar-head navbar-fixed-top">
+    <div class="container">
+        {# INFO: the logo should be placed first for seo reasons #}
+        <div class="navbar-header">
+            {# INFO: the logo should be placed first for seo reasons #}
+            <h1 class="navbar-brand">
+                <a href="/" tabIndex=1 target="_self">
+                    <span class="sr-only">{{ request.site.name }}</span>
+                    {% if CUSTOM_HEADER_LOGO %}
+                        <img src="{{ CUSTOM_HEADER_LOGO }}" alt="{{ request.site.name }}">
+                    {% else %}
+                        <img src="{{ STATIC_URL }}img/logo-main@print.png" alt="{{ request.site.name }}">
+                    {% endif %}
+                </a>
+            </h1>
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar_collapse">
+                <span class="sr-only">{% trans "Toggle navigation" %}</span>
+                {% for row in 123|make_list %}<span class="icon-bar"></span>{% endfor %}
+            </button>
+        </div>
+
+        {% block top_bar_right_menus %}
+            <div class="collapse navbar-collapse" id="navbar_collapse">
+                {% if BETA %}
+                    <form action="/search" method="get" class="navbar-form navbar-left" role="search">
+                        <div class="form-group">
+                            <input class="form-control" name="q" type="search" placeholder="Search">
+                        </div>
+                    </form>
+                {% endif %}
+                <nav class="nav navbar-main navbar-right" id="navigation">
+                <ul class="nav navbar-nav navbar-right">
+                    <h2 class="sr-only">{% trans "Navigation" %}</h2>
+                    <li class="child first {% active request '^/$' %}">
+                        <a href="/">
+                            <span>{% trans "Competidores" %}</span>
+                        </a>
+                    </li>
+                    <li class="child {% active request '^/competiciones/$' %}{% active request '^/competitions/(?P<pk>\d+)$' %}">
+                        <a href="/competiciones/">
+                            <span>{% trans "Competiciones" %}</span>
+                        </a>
+                    </li>
+                    <li class="child {% active request '^/patrocinadores/$' %}">
+                        <a href="/patrocinadores/">
+                            <span>{% trans "Patrocinadores" %}</span>
+                        </a>
+                    </li>
+                          {% if SINGLE_COMPETITION_VIEW_PK %}
+                              {% if request.user.is_superuser or request.user.is_staff %}
+                    <li class="{% active request '/my/' %}">
+                                  <a href="/my">{% trans "Mis Competiciones" %}</a>
+                    </li>
+                              {% endif %}
+                          {% endif %}
+                    {% if user.is_authenticated %}
+                        <li class="dropdown {% active request '/accounts/' %}">
+                            <a href="{% url 'user_settings' %}">
+                                <img src="{{ STATIC_URL }}img/icon_mini_avatar.png" class="mini-avatar" alt="{{user.username}}"> {{user.username}} <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="/my">{% trans "Mis Competiciones" %}</a></li>
+                                <li class="divider"></li>
+                                <li><a href="{% url 'user_settings' %}">{% trans "Ajustes" %}</a></li>
+                                <li class="divider"></li>
+                                {% if user.is_superuser %}
+                                    <li><a href="{% url 'admin_monitoring_links' %}">{% trans "Admin Monitoring Links" %}</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="{% url 'customize_codalab' %}">{% trans "Personalizar Hokini" %}</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="{% url 'queues:list' %}">{% trans "Worker Queue Management" %}</a></li>
+                                    <li class="divider"></li>
+                                {% endif %}
+                                <li><a href="/accounts/password/reset/" target="_self">{% trans "Cambiar contraseña" %}</a></li>
+                                <li class="divider"></li>
+                                <li><a href="{% url 'account_logout' %}" target="_self">{% trans "Cerrar sesión" %}</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="child {% active request '^/accounts/login/$' %}">
+                            <a href="{% url 'account_login' %}?next={{request.path}}" target="_self">{% trans "Entrar" %}</a>
+                        </li>
+                        <li class="child {% active request '^/accounts/signup/$' %}">
+                            <a href="{% url 'account_signup' %}?next={{request.path}}" target="_self">{% trans "Regístrate" %}</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+            </nav>
+        {% endblock top_bar_right_menus %}
+    </div>
+</header>
+{% endblock header %}
+
+    {% block nosubheader %}
+        {% block subheader %}
+            <div class="page-header">
+                <div class="container">
+                    <h1>{% block page_title %}{% endblock page_title %}</h1>
+                </div>
+            </div>
+        {% endblock subheader %}
+    {% endblock nosubheader %}
+
+    {% block hero_subheader %}
+    {% endblock hero_subheader %}
+
+    {% block content_wrapper %}
+        <div class="{% if stretch_100_percent_width %}container-fluid{% else %}container{% endif %}" >
+            {% block content %}
+            {% endblock content %}
+        </div>
+    {% endblock content_wrapper %}
+{% endblock extend_root %}
+

@@ -1,0 +1,73 @@
+{% extends 'hokini_base.html' %}
+
+{% load i18n %}
+{% block nosubheader %} {% endblock nosubheader %}
+{% block head_title %}{% trans "Competiciones" %}{% endblock head_title %}
+
+
+{% block hero_subheader %}
+<div class="page-header">
+    <div class="container">
+        <h1>{% trans "Competiciones" %}</h1>
+    </div>
+</div>
+{% endblock hero_subheader %}
+
+{% block content %}
+<div class="container">
+    <div class="spacer spacer-xs"></div>
+    
+    <div class="row">
+        <div class="col-sm-12 competition-latest-list">
+            {% if not latest_competitions %}
+                <p><em>{% trans "Por ahora no tenemos competiciones" %}</em></p>
+            {% else %}
+                {% for competition in latest_competitions %}
+                    {% include "web/competition_latest.html" with competition=competition %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+<div class="spacer spacer-md"></div>
+        
+{% endblock content %}
+<script>
+{% block js %}
+    $(function () {
+        $(".top-bar-section ul > li").removeClass("active");
+    });
+
+    function populate(frm, data) {
+        $.each(data, function(key, value){
+            var $ctrl = $('[name='+key+']', frm);
+            switch($ctrl.attr("type"))
+            {
+                case "text":
+                case "hidden":
+                    $ctrl.val(value);
+                    break;
+                case "radio":
+                case "checkbox":
+                    $ctrl.each(function(){
+                        if(value=='on') {
+                            $(this).attr("checked",value);
+                        }
+                    });
+                    break;
+                default:
+                    $ctrl.val(value);
+            }
+        });
+    }
+    $('.competition-tile').on('click',function(){
+        var competitionID = $(this).find('#competitionID').val();
+        window.location.href = '/competitions/' + competitionID;
+    });
+
+    var params = {}
+    location.search.substr(1).split("&").forEach(function(item) {params[item.split("=")[0]] = item.split("=")[1]})
+
+    populate('#search_form', params);
+{% endblock js %}
+</script>

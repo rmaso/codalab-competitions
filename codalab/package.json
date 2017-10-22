@@ -1,10 +1,10 @@
 {
-  "name": "codalab",
+  "name": "hokini",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build-css": "lessc apps/web/static/less/imports.less > apps/web/static/css/imports.css",
+    "build-css": "lessc apps/hokini/static/less/hokini_imports.less > apps/web/static/css/imports.css",
     "watch-css": "watch 'npm run build-css' apps/web/static/less"
   },
   "author": "",

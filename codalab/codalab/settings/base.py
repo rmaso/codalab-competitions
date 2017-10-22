@@ -230,6 +230,9 @@ class Base(Settings):
         'apps.teams',
         'apps.customizer',
 
+        # Hokini apps
+        'apps.hokini',
+
         # Authentication app, enables social authentication
         'allauth',
         'allauth.account',

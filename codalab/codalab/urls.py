@@ -10,6 +10,7 @@ from apps.web.views import MyAdminView
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    url(r'', include('apps.hokini.urls')),
     url(r'', include('apps.web.urls')),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^clients/', include('apps.authenz.urls')),

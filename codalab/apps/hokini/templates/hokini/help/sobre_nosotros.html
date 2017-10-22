@@ -1,0 +1,130 @@
+{% extends 'hokini_base.html' %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Competidores" %}{% endblock %}
+{% block nosubheader %} {% endblock nosubheader %}
+{% block title %}{% endblock title %}
+
+{% block custom_body_attributes %}class="tpl-home"{% endblock %}
+
+{% block hero_subheader %}
+<div class="feature-wrapper js-feature-wrapper">
+    <div class="feature-visual">
+        <img src="{{STATIC_URL}}img/feature-default.jpg" alt="" class="img-responsive">
+    </div>
+    <div class="feature-content">
+        <section class="container">
+            <div class="row">
+                <div class="col-md-24">
+                    <div class="spacer spacer-lg"></div>
+                    <h1>{% trans "Batallas de Machine Learning"%}</h1>
+                    <p class="hidden-xs">{% trans "Desarrolla modelos de machine learning"%}<br>
+                    {% trans "Compite contra los mejores analístas de datos"%} <br>
+                    {% trans "¡¡¡Gana premios!!!"%}</p>
+                    <div class="spacer spacer-xs"></div>
+                    <a href="/competiciones/" class="btn btn-warning btn-lg" role="button">{% trans "Participa en la batalla"%}</a>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock hero_subheader %}
+
+{% block content %}
+<div class="container">
+    <div class="text-center"><div class="spacer spacer-lg"></div>
+    <h2>Rétate a ti mismo con problemas reales de Machine Learning</h2>
+    <h4>Desarrolla modelos de machine learning con datos reales aplicados al mundo real </h4>
+    <p></p>
+    <div class="spacer spacer-sm"></div>
+    <div class="row">
+        <div class="col-sm-6 col-md-3">
+            <p class="icon-rounded"><span class="icon fa fa-download" aria-hidden="true"></span></p>
+            <h3>Elige la competición</h3>
+            <p>Descárgate de los datos de la competición en la que quieras participar</p>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <p class="icon-rounded"><span class="icon fa fa-qrcode" aria-hidden="true"></span></p>
+            <h3>Desarrolla tu modelo</h3>
+            <p>Usa las herramientas o métodos que prefieras para desarrollar tus modelos</p>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <p class="icon-rounded"><span class="icon fa fa-upload" aria-hidden="true"></span></p>
+            <h3>Clasifícate</h3>
+            <p>Sube tus predicciones y consulta tu puntuación en tiempo real en la tabla de clasificación.</p>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <p class="icon-rounded"><span class="icon fa fa-graduation-cap" aria-hidden="true"></span></p>
+            <h3>¡Gana premios!</h3>
+            <p>Gana premios y progresa en la clasificación global</p>
+        </div>    
+    </div>
+    <div class="spacer spacer-md"></div>
+    <a href="/competiciones/" class="btn btn-warning btn-lg" role="button">Participa en la Batalla</a></div>
+    <div class="spacer spacer-md"></div>
+    <div class="text-center"><hr>
+        <div class="spacer spacer-lg"></div>
+        <h2>Desarrolla tu carrera profesional</h2>
+        <div class="row">
+            <div class="col-sm-12 col-md-4">
+                <h3>Compite</h3>
+                <p>Compite con el resto de participantes en las batallas y pon a prueba toda tu capacidad de análisis. Demuestra tus habilidades, logrando el modelo que mejor se adapta a un objetivo real, definido por empresas reales. Podrás usar la plataforma que tu elijas, el límite lo marcas tú.</p>
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <h3>Participa en los foros</h3>
+                <p>Únete a nuestra comunidad de expertos. Podrás abrir temas nuevos o compartir tu opinión en temas ya abiertos.</p>
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <h3>Comparte tu código</h3>
+                <p>Valida tu solución poniendola a prueba frente a toda la comunidad. Podrás hacer pregunta por tu código, compartirlo y recibir el feedback del resto de la comunidad, con opiniones que te ayuden a mejorarla, ayudar a otros o verificar que tu código es el mejor.</p>
+            </div>
+        </div>
+        <a href="/competiciones/" class="btn btn-warning btn-lg" role="button">Date a conocer</a>
+
+    </div>
+    <div class="spacer spacer-md"></div>
+
+</div>
+
+{% endblock content %}
+
+<script>
+{% block js %}
+    $(function () {
+        $(".top-bar-section ul > li").removeClass("active");
+    });
+
+    function populate(frm, data) {
+        $.each(data, function(key, value){
+            var $ctrl = $('[name='+key+']', frm);
+            switch($ctrl.attr("type"))
+            {
+                case "text":
+                case "hidden":
+                    $ctrl.val(value);
+                    break;
+                case "radio":
+                case "checkbox":
+                    $ctrl.each(function(){
+                        if(value=='on') {
+                            $(this).attr("checked",value);
+                        }
+                    });
+                    break;
+                default:
+                    $ctrl.val(value);
+            }
+        });
+    }
+    $('.competition-tile').on('click',function(){
+        var competitionID = $(this).find('#competitionID').val();
+        window.location.href = '/competitions/' + competitionID;
+    });
+
+    var params = {}
+    location.search.substr(1).split("&").forEach(function(item) {params[item.split("=")[0]] = item.split("=")[1]})
+
+    populate('#search_form', params);
+{% endblock js %}
+</script>

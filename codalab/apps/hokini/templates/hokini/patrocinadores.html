@@ -1,0 +1,135 @@
+{% extends 'hokini_base.html' %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Patrocinadores" %}{% endblock %}
+{% block nosubheader %} {% endblock nosubheader %}
+{% block title %}{% endblock title %}
+
+{% block custom_body_attributes %}class="tpl-home"{% endblock %}
+
+{% block hero_subheader %}
+<div class="feature-wrapper js-feature-wrapper">
+    <div class="feature-visual">
+        <img src="{{STATIC_URL}}img/feature-default.jpg" alt="" class="img-responsive">
+    </div>
+    <div class="feature-content">
+        <section class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="spacer spacer-lg"></div>
+                    <h1>Conecta fácilmente tus datos con los analistas de datos</h1>
+                    <p class="hidden-xs">Comprueba lo que puede hacer nuestra comunidad por ti</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock hero_subheader %}
+
+{% block content %}
+<div class="container">
+    <div class="text-center">
+        <h2>Resolución de problemas de negocio</h2>
+        <p>Nuestras competiciones de machine learning desarrollan los algoritmos más exactos posibles con sus datos, otorgando confianza y permitiendo facilitar el proceso de toma de decisión de la empresa al basarlo en datos.</p>
+        <div class="spacer spacer-xs"></div>
+        
+        <h4>Aprende como:</h4>
+        <div class="spacer spacer-lg"></div>
+    </div>
+
+    <div class="list list-timeline">
+        <div class="list-item list-group-item-default">
+            <img src="{{STATIC_URL}}img/timeline_1.jpg__1170x1170_q85_crop_subsampling-2_upscale.jpg" alt="" class="img-responsive">
+
+            <h3>Definir el problema</h3>
+            <p>Para todos los sectores: educación, finanzas a salud... si tiene los datos y comparte nuestra visión para sacarle el máximo a los mismos, identifique un problema de machine learning y nosotros le ayudaremos a encontrar la mejor solución.</p>
+        </div>
+        <div class="list-item list-group-item-default">
+            <img src="{{STATIC_URL}}img/timeline_2.jpg__1170x1170_q85_crop_subsampling-2_upscale.jpg" alt="" class="img-responsive">
+            <h3>Determinar el alcance </h3>
+            <p>Trabajaremos juntos para refinar el problema, verificar que está bien definido, que tiene datos suficientes y establecer el conjunto de datos a utilizar por los participantes. Mantendremos el anonimato de los mismos, siempre pendientes de la confidencialidad, sin que ello afecte a la solución final.</p>
+        </div>
+        <div class="list-item list-group-item-default">
+            <img src="{{STATIC_URL}}img/timeline_3.jpg__1170x1170_q85_crop_subsampling-2_upscale.jpg" alt="" class="img-responsive">
+            <h3>Empezar con la competición</h3>
+            <p>Podrá colaborar con nosotros a lo largo de toda la competición: en la construcción de las páginas, involucrarse en los foros, revisar el código compartido e ir viendo cómo los modelos mejoran en la clasificación. </p>
+        </div>
+        <div class="list-item list-group-item-default">
+            <img src="{{STATIC_URL}}img/timeline_4.jpg__1170x1170_q85_crop_subsampling-2_upscale.jpg" alt="" class="img-responsive">
+            <h3>Aprender y aplicar</h3>
+            <p>Recopilaremos los 3 modelos que han logrado la mejor solución. Recibirá el código así como la documentación de los ganadores.Podrá resolver sus dudas directamente con los ganadores y finalizar así con la transferencia del conocimiento.</p>
+        </div>
+    </div>
+    <div class="text-center"><hr>
+        <div class="spacer spacer-xs"></div>
+        <h2>Proceso de selección de candidatos</h2>
+        <p>Nuestras competiciones de reclutamiento piden a los candidatos que resuelvan problemas adaptados a sus necesidades empresariales. Usted define el objetivo, y ellos usarán sus datos (anonimizados) para lograr el mejor modelo posible. Sabrá que candidatos son los que mejor han sabido adaptarse a sus necesidades.</p>
+        <div class="spacer spacer-xs"></div>
+
+        <h3>¡Contrata!</h3>
+        <p>Mejore o monte su propio equipo de analistas con quien ha demostrado que puede lograr los objetivos marcados. Reciba los CV presentados por los participantes y use nuestro informe del candidato personalizado para comenzar la contratación.</p>
+        <div class="spacer spacer-lg"></div>
+    </div>
+
+    <div class="container">
+        <div class="section-gray">
+            <h2 class="text-center">Contacta con nosotros</h2>
+            <div class="spacer spacer-xs"></div>
+            <div class="row">
+                <div class="col-md-5">
+                    <h4>Estamos aquí para ti</h4>
+                    <dl class="dl-horizontal">
+                        <dt>Teléfono:</dt>
+                        <dd><a href="tel:777777777">777 777 777</a></dd>
+                        <dt>Email:</dt>
+                        <dd><a href="mailto:info@hokini.com">info@hokini.com</a></dd>
+                        <dt>Website:</dt>
+                        <dd><a href="/">www.hokini.com</a></dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}
+
+<script>
+{% block js %}
+    $(function () {
+        $(".top-bar-section ul > li").removeClass("active");
+    });
+
+    function populate(frm, data) {
+        $.each(data, function(key, value){
+            var $ctrl = $('[name='+key+']', frm);
+            switch($ctrl.attr("type"))
+            {
+                case "text":
+                case "hidden":
+                    $ctrl.val(value);
+                    break;
+                case "radio":
+                case "checkbox":
+                    $ctrl.each(function(){
+                        if(value=='on') {
+                            $(this).attr("checked",value);
+                        }
+                    });
+                    break;
+                default:
+                    $ctrl.val(value);
+            }
+        });
+    }
+    $('.competition-tile').on('click',function(){
+        var competitionID = $(this).find('#competitionID').val();
+        window.location.href = '/competitions/' + competitionID;
+    });
+
+    var params = {}
+    location.search.substr(1).split("&").forEach(function(item) {params[item.split("=")[0]] = item.split("=")[1]})
+
+    populate('#search_form', params);
+{% endblock js %}
+</script>

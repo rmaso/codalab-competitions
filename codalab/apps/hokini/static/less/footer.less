@@ -1,0 +1,36 @@
+footer {
+    height: @footer-height;
+    background-color: @bg-footer;
+    color:@bg-text-color;
+    font-size:@font-size-small;
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    a {
+        color:@bg-text-color;
+    }
+    > .container {
+        padding-left: @grid-gutter-width / 2;
+        padding-right: @grid-gutter-width / 2;
+    }
+    .navbar-text {
+        margin:0;
+    }
+    .nav > li > a {
+        padding-left:10px;
+        padding-right:10px;
+        line-height:@footer-height - 2;
+        &:hover {
+            background:transparent;
+            color:@bg-text-color-hover;
+        }
+    }
+    @media (max-width: @grid-float-breakpoint) {
+        .nav > li {
+            display: inline-block;
+        }
+    }
+    .navbar-nav.navbar-right:last-child {
+        margin-right:0;
+    }
+}
