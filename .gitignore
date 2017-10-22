@@ -100,3 +100,8 @@ ace-builds-master
 # Local files to be ignored #
 ##############################
 /codalab/local_fabfile.py
+
+# Configurations files #
+##############################
+env_*
+

@@ -1,0 +1,172 @@
+version: '2'
+services:
+  # --------------------------------------------------------------------------
+  # HTTP Server
+  # --------------------------------------------------------------------------
+  nginx:
+    restart: unless-stopped
+    image: nginx
+    ports:
+      - ${NGINX_PORT}:${NGINX_PORT}
+      - ${SSL_PORT}:${SSL_PORT}
+    command: bash -x /app/docker/run_nginx.sh
+    volumes:
+      - ./certs:/app/certs
+      - ./docker:/app/docker
+      - ./codalab:/app/codalab
+      - ../hokimi/certs:/app_test/certs
+      - ../hokimi/docker:/app_test/docker
+      - ../hokimi/codalab:/app_test/codalab      
+      - ${LOGGING_DIR}/nginx:/var/log/nginx/
+    env_file: env_prod
+    links:
+      - django:django
+    external_links:
+      - django_test:django_test
+    container_name: nginx
+
+
+  # --------------------------------------------------------------------------
+  # Database
+  # --------------------------------------------------------------------------
+  # mysql:
+  #   restart: always
+  #   image: mysql:5.7
+  #   hostname: mysql
+  #   user: "1000:50"
+  #   environment:
+  #     # These aren't set in .env
+  #     - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+  #     - MYSQL_DATABASE=${DB_NAME}
+  #   volumes:
+  #     - ./docker:/app/docker
+  #     - ./docker/mysql:/etc/mysql/conf.d
+  #     - ${LOGGING_DIR}/mysql:/var/log/mysql
+  #     - ${DB_DATA_PATH}:/var/lib/mysql
+  #   env_file: .env
+  #   container_name: mysql
+
+
+  # --------------------------------------------------------------------------
+  # Message queue
+  # --------------------------------------------------------------------------
+  rabbit:
+    restart: unless-stopped
+    build:
+      # Custom Dockerfile for rabbit mostly to make building faster because
+      # of envsubst dependency
+      context: .
+      dockerfile: docker/rabbitmq/Dockerfile
+    hostname: rabbit
+    command: bash -x /app/docker/run_rabbitmq.sh
+    environment:
+      - RABBITMQ_LOGS=/var/log/rabbitmq/output.log
+      - RABBITMQ_SASL_LOGS=/var/log/rabbitmq/output_sasl.log
+    env_file: env_prod
+    volumes:
+      - ./docker:/app/docker
+      - ./certs:/app/certs
+      - ${LOGGING_DIR}/rabbitmq:/var/log/rabbitmq
+      - ./var/data/rabbitmq/:/var/lib/rabbitmq
+    ports:
+      - ${RABBITMQ_PORT}:${RABBITMQ_PORT}
+      - ${RABBITMQ_MANAGEMENT_PORT}:${RABBITMQ_MANAGEMENT_PORT}
+    container_name: rabbit
+
+  flower:
+    restart: unless-stopped
+    image: totem/celery-flower-docker
+    hostname: flower
+    ports:
+      - ${FLOWER_PORT}:${FLOWER_PORT}
+    environment:
+      # These aren't set in .env
+      - AMQP_USERNAME=${RABBITMQ_DEFAULT_USER}
+      - AMQP_PASSWORD=${RABBITMQ_DEFAULT_PASS}
+      - AMQP_HOST=rabbit
+      - AMQP_PORT=${RABBITMQ_PORT}
+      # - FLOWER_CERTFILE=${SSL_CERTIFICATE}
+      # - FLOWER_KEYFILE=${SSL_CERTIFICATE_KEY}
+    volumes:
+      - ./certs:/app/certs
+    env_file: env_prod
+    links:
+      - rabbit
+    container_name: flower
+
+
+  # --------------------------------------------------------------------------
+  # Cache
+  # --------------------------------------------------------------------------
+  memcached:
+    restart: unless-stopped
+    image: memcached
+    hostname: memcached
+    command: "/usr/local/bin/memcached -u memcache -vv"
+    container_name: memcached
+
+
+  # --------------------------------------------------------------------------
+  # Django
+  # --------------------------------------------------------------------------
+  django:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
+    hostname: django
+    command: bash /app/docker/run_django.sh
+    volumes:
+      - ./certs:/app/certs
+      - ./codalab:/app/codalab
+      - ./docker:/app/docker
+      - ${LOGGING_DIR}/django:/var/log/django/
+    env_file: env_prod
+    environment:
+      - CONFIG_SERVER_NAME=${CODALAB_SITE_DOMAIN}
+    links:
+    #  - mysql
+      - rabbit
+      - memcached
+    container_name: django
+
+
+  # --------------------------------------------------------------------------
+  # Celery Workers
+  # --------------------------------------------------------------------------
+  worker_site:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: sh /app/docker/run_site.sh
+    volumes:
+      - ./codalab:/app/codalab
+      - ./docker:/app/docker
+      - ${LOGGING_DIR}/worker_site:/var/log/
+    env_file: env_prod
+    links:
+    #  - mysql
+      - rabbit
+    container_name: worker_site
+      
+  worker_compute:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: docker/worker_compute/Dockerfile
+    ports: 
+      - 8000:8000
+    volumes:
+      - ./codalab:/app/codalab
+      - ./docker:/app/docker
+      - ${LOGGING_DIR}/worker_compute:/var/log/
+      - ${SUBMISSION_TEMP_DIR}:${SUBMISSION_TEMP_DIR}
+    environment:
+      # Unset database for this, use memory
+      - DB_ENGINE=memory
+    env_file: env_prod
+    links:
+    #  - mysql
+      - rabbit
+    container_name: worker_compute
